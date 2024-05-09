@@ -9,8 +9,12 @@ class Server {
     }
 
     listen() {
-        this.app.listen(this. port, () => {
-            console.log(`Server running on port ${this.port}`);
+        this.app.listen(this.port, () => {
+            try {
+                console.log(`Server running on port ${this.port}`);
+            } catch (error) {
+                console.error(`Error running the server ${error}`)
+            }
         })
     }
 }
