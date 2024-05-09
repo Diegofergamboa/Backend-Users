@@ -1,3 +1,7 @@
-export const name = '';
+import dotenv from 'dotenv'
+import Server from './models/server';
 
-console.log(name)
+// Dotenv setup
+dotenv.config()
+
+const server = new Server();
