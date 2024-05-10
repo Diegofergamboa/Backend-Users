@@ -1,9 +1,10 @@
 import express, { Application } from 'express';
 import userRoutes from '../routes/user';
+import cors from 'cors';
 class Server {
     private app: Application;
     private port: string;
-    
+
     private apiPaths = {
         getUsers: '/api/users',
         getUser: '/api/user/:id',
@@ -18,6 +19,18 @@ class Server {
 
         // Define routes
         this.routes();
+
+        // Define middlewares
+        this.middlewares();
+    }
+
+    middlewares() {
+        // CORS
+        this.app.use( cors() );
+        // Body Parser
+        this.app.use( express.json() );
+        // Public folder
+        this.app.use(express.static('public'));
     }
 
 

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-export const getUsers = (req: Request, res: Response) => {
+export const getUsers = (_req: Request, res: Response) => {
     res.json({
         ok: true,
         msg: 'getUsers',

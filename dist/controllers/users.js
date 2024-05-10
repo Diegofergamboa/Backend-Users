@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.updateUser = exports.postUser = exports.getUser = exports.getUsers = void 0;
-const getUsers = (req, res) => {
+const getUsers = (_req, res) => {
     res.json({
         ok: true,
         msg: 'getUsers',
