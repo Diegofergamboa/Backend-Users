@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import userRoutes from '../routes/user';
 import cors from 'cors';
+
 class Server {
     private app: Application;
     private port: string;
