@@ -9,18 +9,14 @@ const cors_1 = __importDefault(require("cors"));
 class Server {
     constructor() {
         this.apiPaths = {
-            getUsers: '/api/users',
-            getUser: '/api/user/:id',
-            postUser: '/api/user',
-            updateUser: '/api/user/:id',
-            deleteUser: '/api/user/:id'
+            users: '/api/users'
         };
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '3000';
-        // Define routes
-        this.routes();
         // Define middlewares
         this.middlewares();
+        // Define routes
+        this.routes();
     }
     middlewares() {
         // CORS
@@ -31,7 +27,8 @@ class Server {
         this.app.use(express_1.default.static('public'));
     }
     routes() {
-        this.app.use(this.apiPaths.getUsers, user_1.default);
+        // Obtain routes
+        this.app.use(this.apiPaths.users, user_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {

@@ -1,16 +1,16 @@
 import { Request, Response } from 'express'
+
 export const getUsers = (_req: Request, res: Response) => {
     res.json({
-        ok: true,
-        msg: 'getUsers',
+        msg: 'get users',
     })
 }
 
 
 export const getUser = (req: Request, res: Response) => {
     const { id } = req.params
+
     res.json({
-        ok: true,
         msg: 'get user',
         id
     })
@@ -18,8 +18,8 @@ export const getUser = (req: Request, res: Response) => {
 
 export const postUser = (req: Request, res: Response) => {
     const { body } = req
+
     res.json({
-        ok: true,
         msg: 'post user',
         body,
     })
@@ -28,21 +28,20 @@ export const postUser = (req: Request, res: Response) => {
 export const updateUser = (req: Request, res: Response) => {
     const { body } = req
     const { id } = req.params
+    console.log(req)
 
     res.json({
-        ok: true,
-        msg: 'post user',
+        msg: 'put user',
         body,
         id
     })
 }
 
 export const deleteUser = (req: Request, res: Response) => {
-    const { id } = req.params
+    const { id } = req.query
 
     res.json({
-        ok: true,
-        msg: 'post user',
+        msg: 'delete user',
         id
     })
 }

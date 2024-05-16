@@ -7,36 +7,35 @@ class Server {
     private port: string;
 
     private apiPaths = {
-        getUsers: '/api/users',
-        getUser: '/api/user/:id',
-        postUser: '/api/user',
-        updateUser: '/api/user/:id',
-        deleteUser: '/api/user/:id'   
+        users: '/api/users'
     }
 
     constructor() {
         this.app = express();
         this.port = process.env.PORT || '3000';
+        
+        // Define middlewares
+        this.middlewares();
 
         // Define routes
         this.routes();
-
-        // Define middlewares
-        this.middlewares();
     }
 
     middlewares() {
         // CORS
         this.app.use( cors() );
+
         // Body Parser
         this.app.use( express.json() );
+
         // Public folder
         this.app.use( express.static('public') );
     }
 
 
     routes() {
-        this.app.use(this.apiPaths.getUsers, userRoutes);
+        // Obtain routes
+        this.app.use( this.apiPaths.users, userRoutes );
     }
 
     listen() {
