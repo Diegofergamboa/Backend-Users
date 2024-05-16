@@ -16,13 +16,14 @@ const express_1 = __importDefault(require("express"));
 const user_1 = __importDefault(require("../routes/user"));
 const cors_1 = __importDefault(require("cors"));
 const connection_1 = __importDefault(require("../database/connection"));
+const config_1 = __importDefault(require("../config/config"));
 class Server {
     constructor() {
         this.apiPaths = {
             users: '/api/users'
         };
         this.app = (0, express_1.default)();
-        this.port = process.env.PORT || '3000';
+        this.port = config_1.default.server.port.toString();
         // Connect to database
         this.dbConnection();
         // Define middlewares
@@ -55,12 +56,7 @@ class Server {
     }
     listen() {
         this.app.listen(this.port, () => {
-            try {
-                console.log(`Server running on port ${this.port}`);
-            }
-            catch (error) {
-                console.error(`Error running the server ${error}`);
-            }
+            console.log(`Server running on port ${this.port}`);
         });
     }
 }

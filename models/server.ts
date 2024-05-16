@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import userRoutes from '../routes/user';
 import cors from 'cors';
 import db from '../database/connection';
+import config from '../config/config';
 
 class Server {
     private app: Application;
@@ -9,11 +10,11 @@ class Server {
 
     private apiPaths = {
         users: '/api/users'
-    }
+    };
 
     constructor() {
         this.app = express();
-        this.port = process.env.PORT || '3000';
+        this.port = config.server.port.toString();
         
         // Connect to database
         this.dbConnection();
@@ -27,19 +28,18 @@ class Server {
 
     middlewares() {
         // CORS
-        this.app.use( cors() );
+        this.app.use(cors());
 
         // Body Parser
-        this.app.use( express.json() );
+        this.app.use(express.json());
 
         // Public folder
-        this.app.use( express.static('public') );
+        this.app.use(express.static('public'));
     }
-
 
     routes() {
         // Obtain routes
-        this.app.use( this.apiPaths.users, userRoutes );
+        this.app.use(this.apiPaths.users, userRoutes);
     }
 
     async dbConnection() {
@@ -53,12 +53,8 @@ class Server {
 
     listen() {
         this.app.listen(this.port, () => {
-            try {
-                console.log(`Server running on port ${this.port}`);
-            } catch (error) {
-                console.error(`Error running the server ${error}`)
-            }
-        })
+            console.log(`Server running on port ${this.port}`);
+        });
     }
 }
 
