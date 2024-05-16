@@ -1,28 +1,52 @@
 import { Request, Response } from 'express'
+import User from '../models/user'
 
-export const getUsers = (_req: Request, res: Response) => {
-    res.json({
-        msg: 'get users',
-    })
+export const getUsers = async (_req: Request, res: Response) => {
+    const users = await User.findAll()
+    
+    try {
+        res.json({
+            msg: 'get users',
+            body: {users}
+        })
+    } catch (error) {
+        throw new Error(`Error getting users ${error}`);
+    }
 }
 
 
-export const getUser = (req: Request, res: Response) => {
+export const getUser = async (req: Request, res: Response) => {
     const { id } = req.params
+    const user = await User.findByPk(id)
 
-    res.json({
-        msg: 'get user',
-        id
-    })
+    if (!user) {
+        res.status(404).json({
+            msg: 'User not found',
+        })
+    } else {
+        res.json({
+            user
+        })
+    }
 }
 
-export const postUser = (req: Request, res: Response) => {
-    const { body } = req
+export const postUser = async (req: Request, res: Response) => {
+    const { name, email, status } = req.body;
 
-    res.json({
-        msg: 'post user',
-        body,
-    })
+    try {
+        const newUser = await User.create({ name, email, status });
+        await newUser.save()
+
+        res.json({
+            msg: 'User created',
+            userBody: newUser,
+        })
+    } catch (error) {
+        res.status(500).json({
+            msg: 'Internal error server',
+        })
+        throw new Error(`Error creating user ${error}`);
+    }
 }
 
 export const updateUser = (req: Request, res: Response) => {
