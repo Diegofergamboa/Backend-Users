@@ -3,11 +3,11 @@ import User from '../models/user'
 
 export const getUsers = async (_req: Request, res: Response) => {
     const users = await User.findAll()
-    
+
     try {
         res.json({
             msg: 'get users',
-            body: {users}
+            body: { users }
         })
     } catch (error) {
         throw new Error(`Error getting users ${error}`);
@@ -34,13 +34,22 @@ export const postUser = async (req: Request, res: Response) => {
     const { name, email, status } = req.body;
 
     try {
-        const newUser = await User.create({ name, email, status });
-        await newUser.save()
+        const userValidation = await User.findOne({
+            where: { email: email }
+        });
 
-        res.json({
-            msg: 'User created',
-            userBody: newUser,
-        })
+        if (userValidation) {
+            return res.status(400).json({
+                msg: 'User already exists',
+            });
+        } else {
+            const newUser = await User.create({ name, email, status });
+            await newUser.save();
+            return res.json({
+                msg: 'User created',
+                userBody: newUser,
+            });
+        };
     } catch (error) {
         res.status(500).json({
             msg: 'Internal error server',
@@ -49,23 +58,61 @@ export const postUser = async (req: Request, res: Response) => {
     }
 }
 
-export const updateUser = (req: Request, res: Response) => {
+export const updateUser = async (req: Request, res: Response) => {
     const { body } = req
     const { id } = req.params
-    console.log(req)
 
-    res.json({
-        msg: 'put user',
-        body,
-        id
+    if (body.length === undefined) {
+        res.json({
+            status: 400,
+            msg: 'Bad request',
+        })
+    }
+
+    const userFound = await User.findOne({
+        where: { id }
     })
+
+    if (!userFound) {
+        res.json({
+            status: 404,
+            msg: 'User not found',
+        })
+    } else {
+        res.json({
+            msg: 'User updated',
+            body,
+            id
+        })
+    }
 }
 
-export const deleteUser = (req: Request, res: Response) => {
+export const deleteUser = async (req: Request, res: Response) => {
     const { id } = req.query
 
-    res.json({
-        msg: 'delete user',
-        id
+    if (!id) {
+        res.json({
+            msg: 'Bad request',
+        })
+    }
+
+    const userFound = await User.findOne({
+        where: { id }
     })
+
+    if (!userFound) {
+        res.json({
+            status: 404,
+            msg: `User not found ${id}`,
+        })
+    } else {
+        await userFound.update({
+            state: false
+        });
+        res.json({
+            msg: `User ${id} deledted`,
+            id
+        })
+    }
+
 }

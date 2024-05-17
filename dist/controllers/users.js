@@ -45,12 +45,23 @@ exports.getUser = getUser;
 const postUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, status } = req.body;
     try {
-        const newUser = yield user_1.default.create({ name, email, status });
-        yield newUser.save();
-        res.json({
-            msg: 'User created',
-            userBody: newUser,
+        const userValidation = yield user_1.default.findOne({
+            where: { email: email }
         });
+        if (userValidation) {
+            return res.status(400).json({
+                msg: 'User already exists',
+            });
+        }
+        else {
+            const newUser = yield user_1.default.create({ name, email, status });
+            yield newUser.save();
+            return res.json({
+                msg: 'User created',
+                userBody: newUser,
+            });
+        }
+        ;
     }
     catch (error) {
         res.status(500).json({
@@ -60,23 +71,58 @@ const postUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.postUser = postUser;
-const updateUser = (req, res) => {
+const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     const { id } = req.params;
-    console.log(req);
-    res.json({
-        msg: 'put user',
-        body,
-        id
+    if (body.length === undefined) {
+        res.json({
+            status: 400,
+            msg: 'Bad request',
+        });
+    }
+    const userFound = yield user_1.default.findOne({
+        where: { id }
     });
-};
+    if (!userFound) {
+        res.json({
+            status: 404,
+            msg: 'User not found',
+        });
+    }
+    else {
+        res.json({
+            msg: 'User updated',
+            body,
+            id
+        });
+    }
+});
 exports.updateUser = updateUser;
-const deleteUser = (req, res) => {
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.query;
-    res.json({
-        msg: 'delete user',
-        id
+    if (!id) {
+        res.json({
+            msg: 'Bad request',
+        });
+    }
+    const userFound = yield user_1.default.findOne({
+        where: { id }
     });
-};
+    if (!userFound) {
+        res.json({
+            status: 404,
+            msg: `User not found ${id}`,
+        });
+    }
+    else {
+        yield userFound.update({
+            state: false
+        });
+        res.json({
+            msg: `User ${id} deledted`,
+            id
+        });
+    }
+});
 exports.deleteUser = deleteUser;
 //# sourceMappingURL=users.js.map
